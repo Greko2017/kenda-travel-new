@@ -26,7 +26,7 @@ class History(models.Model):
 	companyName = models.CharField(max_length=30, default='company')
 	location = models.CharField(max_length=30, default='location')
 	STATUS_TYPES = [('pending', 'En Cours'), ('rejected', 'Rejeté'), ('invoiced', 'Approuvé')]
-	booking_status = models.CharField(choices=STATUS_TYPES, max_length=6,default='pending')
+	booking_status = models.CharField(choices=STATUS_TYPES, max_length=25,default='pending')
 
 class Flight(models.Model):
 	companyName = models.CharField(max_length=30)
