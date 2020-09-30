@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KENDA TRAVEL</title>
+
+    <!-- CSS  -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="{% static 'css/materialize.css' %}"
+      type="text/css"
+      rel="stylesheet"
+      media="screen,projection"
+    />
+    <link
+      href="{% static 'css/style.css' %}"
+      type="text/css"
+      rel="stylesheet"
+      media="screen,projection"
+    />
+    <style>
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: red;
+        color: white;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="white" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo teal-text"
+          >KENDA TRAVEL</a
+        >
+        <ul class="right hide-on-med-and-down">
+          <li><a href="/">Flights</a></li>
+          <li><a href="/hotels">Hotels</a></li>
+          <li><a href="/#">Trains</a></li>
+          <li><a href="/explore">Explore</a></li>
+          <li><a href="/reviews">Review</a></li>
+          <!-- Dropdown Trigger -->
+
+          <a class="dropdown-trigger btn" href="#" data-target="dropdown1"
+            >My Account</a
+          >
+          {% if request.session.current_user %}
+          <ul id="dropdown1" class="dropdown-content">
+            <li><a href="/account">Settings</a></li>
+            <li><a onclick="logOut()" href="/logout">Log Out</a></li>
+          </ul>
+          {% else %}
+          <!-- Dropdown Structure -->
+          <ul id="dropdown1" class="dropdown-content">
+            <li><a href="/login">Log In</a></li>
+            <li><a href="/signup">Sign Up</a></li>
+          </ul>
+          {% endif %}
+        </ul>
+
+        <ul id="nav-mobile" class="sidenav">
+          <li><a href="/">KENDA TRAVEL</a></li>
+          <li class="divider" tabindex="-1"></li>
+          <li><a href="/">Flights</a></li>
+          <li><a href="/hotels">Hotels</a></li>
+          <li><a href="/trains">Trains</a></li>
+          <li><a href="/explore">Explore</a></li>
+          <li><a href="/reviews">Review</a></li>
+          <li class="divider" tabindex="-1"></li>
+          {% if request.session.current_user %}
+          <li><a href="/account">Settings</a></li>
+          <li><a href="/logout">Log Out</a></li>
+          {% else %}
+          <li><a class="teal-text" href="/login">Log In</a></li>
+          <li><a href="/signup">Sign Up</a></li>
+          {% endif %}
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"
+          ><i class="material-icons">menu</i></a
+        >
+      </div>
+    </nav>
+
+    {% block content %} {% endblock content %}
+
+    <footer class="page-footer teal">
+      <div class="container">
+        <div class="row">
+          <div class="col l8 s8">
+            <h5 class="white-text">Kenda Online</h5>
+            <p class="grey-text text-lighten-4">             
+              Nous travaillons pour fournir une solution en ligne pour
+              tous ceux qui souhaite préparer leurs voyages et leur séjour en toutes sécurité.
+            </p>
+          </div>
+          <div class="col l4 s4">
+            <h5 class="white-text">Plus d'Infos</h5>
+            <ul>
+              <li><a class="white-text" href="#!">Christ.gamgne@gmail.com</a></li>
+            </ul>
+            <ul>
+              <li><a class="white-text" href="#!">+237 694 65 94 95</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+          Made By
+          <a class="brown-text text-lighten-3" href="#"
+            >GAZ</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="{% static 'js/materialize.js' %}"></script>
+  <script src="{% static 'js/init.js' %}"></script>
+  <script>
+function logOut(){
+  console.log('in remove logOut');
+  localStorage.removeItem('api_token')
+}
+// document.querySelector("#autocomplete-input") 
+
+    $(".dropdown-trigger")?.dropdown();
+
+    M.textareaAutoResize($("#textarea1"));
+
+    $(".datepicker")?.datepicker({
+      format: "yyyy-mm-dd",
+      selectMonths: true, // Creates a dropdown to control month
+      selectYears: 15, // Creates a dropdown of 15 years to control year,
+      today: "Today",
+      clear: "Clear",
+      close: "Ok",
+      closeOnSelect: true,
+      autoClose: true,
+    });
+    let myOmchangeFunc = $("input.autocomplete").onchange = function(){
+      let api_token = localStorage.getItem('api_token',false)
+      console.log('onchange api_token',api_token);
+      if (api_token === false){
+        this.span1.setAttribute('class','invalid')
+        document.querySelector("#autocomplete-input")?.setAttribute('disabled','true')
+      }
+    };
+
+    document.querySelector("#autocomplete-input")?.addEventListener("change", myOmchangeFunc);
+
+    if (localStorage.getItem("api_token")!==null || localStorage.getItem("api_token")!== undefined){
+
+      $("input.autocomplete").autocomplete({
+        data: (function (request, response) {
+          let locations = {};
+          $.ajax({
+            type: "GET",
+            url: "/api/location",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            headers: {
+              Authorization: "Token " + localStorage.getItem("api_token"),
+            },
+            data: {},
+            success: function (data) {
+              return $.map(data, function (item) {
+                let name = `${item.city}, ${item.region}`// item.city + ", " + item.region;
+                locations[name.toString()] = null;
+              });
+            },
+            error: function (err) {
+              console.log('err fetch locations',err);
+              let span1 = document.createElement("span")
+              span1.innerHTML = "Connecté vous pour pouvoir utiliser cette fonctionnalitée"
+              span1.setAttribute('class','helper-text')
+              span1.setAttribute('data-success','all fine')
+              span1.setAttribute('data-error','you must be login in')
+              span1.setAttribute('class','autocomplete invalid')
+              console.log('err fetch locations',span1);
+          document.querySelector("#autocomplete-input")?.setAttribute('disabled','true')
+          
+              document.querySelector("#index-banner > div > div > form > div > div.input-field.col.l11.s11")?.appendChild(span1); 
+            }
+          });
+          return locations;
+        })(),
+      });
+
+    }
+
+  </script>
+</html>

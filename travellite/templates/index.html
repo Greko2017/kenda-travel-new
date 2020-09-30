@@ -1,0 +1,305 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+
+<div id="index-banner">
+  <div class="section no-pad-bot">
+    <div class="container">
+      <form id="search_flight" action="" method="POST">
+        {% csrf_token %}
+        <div class="row center">
+          <h5 class="header col s12 light">Find your next flight</h5>
+          <div class="input-field col l6 s12">
+            <i class="material-icons prefix">flight_takeoff</i>
+            <input
+              
+              autocomplete="lkugjzfkugkjhfjkjgzkj"
+              type="text"
+              name="source"
+              id="autocomplete-input"
+              class="autocomplete"
+            />
+            <label for="autocomplete-input">Source</label>
+          </div>
+          <div class="input-field col l6 s12">
+            <i class="material-icons prefix">flight_land</i>
+            <input
+              
+              autocomplete="lkugjzfkugkjhfjkjgzkj"
+              type="text"
+              name="destination"
+              id="autocomplete-input"
+              class="autocomplete"
+            />
+            <label for="autocomplete-input">Destination</label>
+          </div>
+          <div class="input-field col l8 s12">
+            <i class="material-icons prefix">date_range</i>
+            <input type="text" name="startdate" class="datepicker" />
+          </div>
+          <div class="input-field col l4 s12">
+            <label></label>
+            <select name="class" class="browser-default">
+              <option value="" disabled selected>Choose a class</option>
+              <option value="economy">Economy</option>
+              <option value="business">Business</option>
+              <option value="first">First</option>
+            </select>
+          </div>
+        </div>
+        <div class="row center">
+          <button
+            onclick="event.preventDefault(); searchFlightsFunc(event)"
+            class="btn waves-effect waves-light"
+            style="width: 300px"
+            type="submit">
+            <i class="large material-icons">search</i>
+          </button>
+        </div>
+      </form>
+
+      <br /><br />
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    {% for flight in page_obj %}
+    <div class="col s4">
+
+      <div class="card">
+        <div class="card-image waves-effect waves-block waves-light">
+          <img src="{% static 'images/sample-1.jpg' %}" />
+        </div>
+        <div class="card-content">
+          <span class="card-title activator grey-text text-darken-4">{{flight.companyName}}<i class="material-icons right">more_vert</i></span>
+          <p><a href="#">Booking</a></p>
+        </div>
+        <div class="card-reveal">
+          <span class="card-title grey-text text-darken-4">{{flight.companyName}}<i class="material-icons right">close</i></span>
+          <ul class="collection with-header">
+            <li class="collection-header"><strong>Location</strong></li>
+            <!-- <li class="collection-item"><div>Destination<a href="#!" class="secondary-content"> {{flight.sourceLocation}} </a></div></li>
+                <li class="collection-item"><div>Arrivé<a href="#!" class="secondary-content"> {{flight.destinationLocation}} </a></div></li>
+               -->
+            <li class="collection-item">
+              <p>
+                Destination : {{flight.sourceLocation}} <br />
+                Arrivé: {{flight.destinationLocation}}
+              </p>
+            </li>
+          </ul>
+          <ul class="collection with-header">
+            <li class="collection-header"><strong>Prix</strong></li>
+            <!-- <li class="collection-item"><div>Economy<a href="#!" class="secondary-content"> {{flight.fareEconomy}} </a></div></li>
+                <li class="collection-item"><div>Business<a href="#!" class="secondary-content"> {{flight.fareBusiness}} </a></div></li>
+                <li class="collection-item"><div>First<a href="#!" class="secondary-content"> {{flight.fareFirst}} </a></div></li> -->
+            <li class="collection-item">
+              <!-- <img src="images/yuna.jpg" alt="" class="circle"> -->
+              <!-- <span class="title">Prix</span> -->
+              <p>
+                Economy : {{flight.fareEconomy}} <br />
+                Business: {{flight.fareBusiness}} <br />
+                First: {{flight.fareFirst}}
+              </p>
+              <!-- <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a> -->
+            </li>
+          </ul>
+      
+      </div>
+</div>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+  
+<ul class="pagination center">
+  {% if page_obj.has_previous %}
+      <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+  {%else%}
+  <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+  {% endif %}
+
+  {% for num_page in page_obj.paginator.page_range %}
+    {% if page_obj.number == num_page %}
+    <li class="active"><a href="?page={{ num_page }}">{{num_page}}</a></li>
+    {% else %}
+    <li class="waves-effect"><a href="?page={{ num_page }}">{{num_page}}</a></li>
+    {% endif %}
+    
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+      <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+      {%else%}
+      <li class="disabled"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+  {% endif %}
+</ul>
+{% endif %}
+
+{% if results %}
+<div class="row center">
+  <div class="container">
+    {% for obj in some_list %}
+    <form action="" method="POST">
+      {% csrf_token %}
+      <div class="card teal lighten-2">
+        <div class="card-content white-text">
+          <span class="card-title">{{obj.companyName}}</span>
+          <div class="row" style="font-size: 16px">
+            <div class="col l4 m4 s4">
+              <p>Source: {{obj.sourceLocation}}</p>
+              <p>Destination: {{obj.destinationLocation}}</p>
+            </div>
+            <div class="col l4 m4 s4">
+              <p>Departure Date: {{obj.departureDate}}</p>
+              <p>Departure Time: {{obj.departureTime}}</p>
+            </div>
+            {% if class == "economy" %}
+            <div class="col l4 m4 s4">
+              <p>Class: economy</p>
+              <p>Fare: {{obj.fareEconomy}}</p>
+              <p>Seats Available: {{obj.numSeatsRemainingEconomy}}</p>
+            </div>
+            {% endif %} {% if class == "business" %}
+            <div class="col l4 m4 s4">
+              <p>Class: business</p>
+            </div>
+            <div class="col l4 m4 s4">
+              <p>Fare: {{obj.fareBusiness}}</p>
+            </div>
+            <div class="col l4 m4 s4">
+              <p>Seats Available: {{obj.numSeatsRemainingBusiness}}</p>
+            </div>
+            {% endif %} {% if class == "first" %}
+            <div class="col l4 m4 s4">
+              <p>Class: first</p>
+            </div>
+            <div class="col l4 m4 s4">
+              <p>Fare: {{obj.fareFirst}}</p>
+            </div>
+            <div class="col l4 m4 s4">
+              <p>Seats Available: {{obj.numSeatsRemainingFirst}}</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% if request.session.current_user %}
+        <div class="card-action">
+          <a href="{% url 'book' %}?type=flight&class={{class}}&id={{obj.id}}"
+            >Book Now</a
+          >
+        </div>
+        {% endif %}
+      </div>
+    </form>
+    {% endfor %}
+  </div>
+</div>
+
+{% else %}
+<div class="parallax-container valign-wrapper">
+  <div class="section no-pad-bot">
+    <div class="container">
+      <div class="row center">
+        <h5 class="header col s12 light">
+          KENA ONLINE est une agence de voyage en ligne spécialisée dans les hébergements uniques au Cameroun. 
+        </h5>
+      </div>
+    </div>
+  </div>
+  <div class="parallax">
+    <img
+      src="{% static 'images/background1.jpg' %}"
+      alt="Unsplashed background img 2"
+    />
+  </div>
+</div>
+
+<div class="container">
+  <div class="section">
+    <div class="row">
+      <div class="col s12 m4">
+        <div class="icon-block">
+          <h2 class="center brown-text">
+            <i class="material-icons">local_convenience_store</i>
+          </h2>
+          <h5 class="center">Ici pour vous 24 heures sur 24, 7 jours sur 7</h5>
+
+          <p class="light">
+            Pour la réservation, le soutien ou la connaissance
+            travel inspiration, appelez le +237 694 65 94 95, Christelle
+          </p>
+        </div>
+      </div>
+
+      <div class="col s12 m4">
+        <div class="icon-block">
+          <h2 class="center brown-text"><i class="material-icons">redeem</i></h2>
+          <h5 class="center">KENDA EXTRA À L'ARRIVÉE</h5>
+          <p class="light">            
+            Ayez un petit quelque chose sur nous tous
+            l'heure de l'enregistrement
+          </p>
+        </div>
+      </div>
+
+      <div class="col s12 m4">
+        <div class="icon-block">
+          <h2 class="center brown-text"><i class="material-icons">queue</i></h2>
+          <h5 class="center">UNE NOUVELLE TROUVAILLE CHAQUE MOIS</h5>
+          <p class="light">
+            Nous découvrons des hôtels de luxe cachés et les nouvelles ouvertures les plus intéressantes
+          </p>
+        </div>
+      </div>
+
+      
+      <div class="col s12 m4">
+        <div class="icon-block">
+          <h2 class="center brown-text"><i class="material-icons">record_voice_over</i></h2>
+          <h5 class="center">DES HÔTELS PERSONNELLEMENT AGRÉÉS</h5>
+          <p class="light">            
+            Chaque hôtel est visité par nous et examiné de manière anonyme
+          </p>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+{% endif %} 
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+     let source = localStorage.getItem('source')
+     let destination = localStorage.getItem('destination')
+     let startdate = localStorage.getItem('startdate')
+     let classValue = localStorage.getItem('classValue')
+      if (classValue!== ""){
+     document.querySelector("#search_flight > div:nth-child(2) > div.input-field.col.l4.s12 > select").value = classValue
+      }
+     document.querySelectorAll("#autocomplete-input")[0].value = source
+     document.querySelectorAll("#autocomplete-input")[1].value = destination
+     document.querySelector("#search_flight > div:nth-child(2) > div.input-field.col.l8.s12 > input").value = startdate
+   });
+
+ function searchFlightsFunc(e) {
+   e.preventDefault()
+   let source =document.querySelectorAll("#autocomplete-input")[0].value
+   let destination = document.querySelectorAll("#autocomplete-input")[1].value
+   let startdate = document.querySelector("#search_flight > div:nth-child(2) > div.input-field.col.l8.s12 > input").value
+   let classValue = document.querySelector("#search_flight > div:nth-child(2) > div.input-field.col.l4.s12 > select").value
+   localStorage.setItem('source',source)
+   localStorage.setItem('destination',destination)
+   localStorage.setItem('startdate',startdate)
+   localStorage.setItem('classValue',classValue)
+   console.log('In searchFlightsFunc source: ',source,' destination: ',destination,' startdate: ',startdate);
+   document.forms['search_flight'].submit();
+ }
+</script>
+{% endblock content %}

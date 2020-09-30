@@ -1,0 +1,152 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<div class="container">
+  <div class="row">
+    <!-- onsubmit ="mySubmitFunc(event);" -->
+    <form 
+      id="login_form"
+      class="col s6 offset-s3"
+      method="POST"
+    >
+      {% csrf_token %}
+      <center>
+        <h4>Log In</h4>
+        {% if msg %} {{ msg }} {% endif %}
+      </center>
+      <div class="row">
+        <div class="input-field col s12">
+          <i class="material-icons prefix">account_box</i>
+          <input
+            id="icon_prefix username"
+            name="username"
+            type="text"
+            class="validate"
+          />
+          <label for="icon_prefix">Username</label>
+          <span
+            class="helper-text"
+            data-error="Incorrect Username format"
+            data-success=""
+          ></span>
+        </div>
+        <div class="input-field col s12">
+          <i class="material-icons prefix">lock</i>
+          <input id="icon_prefix password" name="password" type="password" />
+          <label for="icon_prefix">Password</label>
+        </div>
+        <center>
+          <button onclick="mySubmitFunc(event)" class="btn waves-effect waves-light" type="submit">
+            Submit
+            <i class="material-icons right">send</i>
+          </button>
+        </center>
+        <br />
+        <center>
+          <a class="blue-text waves-effect waves-teal btn-flat" href="/signup"
+            >Don't have an account? Register now</a
+          >
+        </center>
+      </div>
+    </form>
+  </div>
+</div>
+<!--   <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center teal-text text-lighten-2">Parallax Template</h1>
+        <div class="row center">
+          <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
+        </div>
+        <div class="row center">
+          <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
+        </div>
+        <br><br>
+
+      </div>
+    </div>
+    <div class="parallax"><img src="{% static 'images/background1.jpg' %}" alt="Unsplashed background img 1"></div>
+  </div> -->
+
+<script>
+  // const onSubmitLoginForm = () => {
+  //   username = document.getElementById('username').value
+  //   password = document.getElementById('password').value
+  // }
+  //document.querySelector("#login_form").onsubmit
+  var mySubmitFunc = (event) => {
+    event.preventDefault(); 
+    // email = document.querySelector("#icon_prefix\\ email").value;
+    // password = document.querySelector("#icon_prefix\\ password").value;
+    // csrf_token = "{% csrf_token %}";
+    // // send result to server
+    // // var data = localStorage.getItem("groups");
+    // // var userid = {{user.userid}};
+    // // console.log(data);
+
+    // $.ajax({
+    //   url: "/login/",
+    //   type: "POST",
+    //   data: {
+    //     email: email,
+    //     password: password,
+    //     // group:data,
+    //     // userid:userid,
+    //     csrfmiddlewaretoken: csrf_token,
+    //     success: function (res) {
+    //       console.log("response", res);
+    //       // alert("Submitted succeffully",res);
+    //       // window.location = "/interface/";
+    //     },
+    //   },
+    // });
+
+    // Initialize new request
+    const request = new XMLHttpRequest();
+    username = document.querySelector("#icon_prefix\\ username").value;
+    password = document.querySelector("#icon_prefix\\ password").value;
+    csrf_token = "{{ csrf_token }}";
+
+    request.open("POST", "/api/auth/login");
+
+    // Callback function for when request completes
+    request.onload = () => {
+      // Extract JSON data from request
+      const data = JSON.parse(request.responseText);
+      
+       console.log("Request Sucess", data.token);
+        localStorage.setItem('api_token',data.token)
+        // localStorage.setItem('username',username)
+        // localStorage.setItem('password',password)
+        document.forms['login_form'].submit();
+
+      // // Update the result div
+      // if (data.success) {
+      //   // localStorage.setItem("username", data.username);
+      //   // window.location.assign("/home");
+      //   console.log("Request Sucess", data.user.token);
+      //   localStorage.setItem('api_token',data.user.token)
+      // } else {
+      //   // document.querySelector("#result").innerHTML = "There was an error.";
+      //   console.log("Request Error", data);
+      // }
+    };
+
+    // Add data to send with request
+    const data = new FormData();
+    // data.append("username", username);
+    // data.append("password", password);
+    data.append("csrfmiddlewaretoken", csrf_token);
+
+    // Send request
+    request.send(data);
+
+    // Clear input field and disable button again
+    // document.querySelector("#icon_prefix\\ username").value = '';
+    // document.querySelector("#icon_prefix\\ password").value='';
+    // document.querySelector(
+    //   "body > div.container > div > form > div > center:nth-child(3) > button"
+    // ).disabled = true;
+    return true;
+  }
+</script>
+{% endblock content %}
