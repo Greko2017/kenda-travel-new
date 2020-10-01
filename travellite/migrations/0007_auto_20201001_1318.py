@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='history',
             name='bookingStatus',
-            field=models.CharField(choices=[('pending', 'En Cours'), ('rejected', 'Rejeté'), ('invoiced', 'Approuvé')], default='pending', max_length=25),
+            field=models.CharField(choices=[('pending', 'En Cours'), ('rejected', 'Rejeté'), ('invoiced', 'Approuvé')], default='pending'),
         ),
     ]
