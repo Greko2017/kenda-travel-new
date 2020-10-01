@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('travellite', '0006_history_bookingStatus'),
+        ('travellite', '0006_history_booking_status'),
     ]
 
     operations = [
